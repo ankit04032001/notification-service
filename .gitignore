@@ -1,0 +1,77 @@
+
+# === General ===
+HELP.md
+
+# === Build outputs ===
+target/
+build/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# === Compiled Java class files ===
+*.class
+
+# === Java archives ===
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# === Maven ===
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+
+# === IDE files ===
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+.nb-gradle/
+
+# === Editor swap/backup files ===
+*.swp
+*.bak
+*.tmp
+*.orig
+*~.nib
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Logs ===
+*.log
+logs/
+
+# === Environment / Secrets ===
+.env
+.env.*
+application-local.properties
+application-local.yml
+application-secrets.properties
+
+# === Test & Coverage ===
+coverage/
+jacoco/
+jacoco.exec
+
+# === Docker volumes ===
+docker/volumes/

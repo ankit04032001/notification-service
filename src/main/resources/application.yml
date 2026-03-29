@@ -1,0 +1,117 @@
+#Notification Service — Shared Configuration 
+#Profile-specific overrides in application-{profile}.yml
+spring:
+  application:
+    name: notification-service
+
+  profiles:
+    active: dev
+
+  # ── JPA / Hibernate ───────────────────────────────────────────
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+  
+  # Enable Flyway
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  # ── Jackson ───────────────────────────────────────────────────
+  jackson:
+    default-property-inclusion: non_null
+
+# ── Server ────────────────────────────────────────────────────
+server:
+  port: 8080
+  shutdown: graceful
+
+# ── Spring Lifecycle ──────────────────────────────────────────
+spring.lifecycle:
+  timeout-per-shutdown-phase: 30s
+
+# ── Actuator / Observability ──────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+# ── Resilience4j — Circuit Breaker & Retry (annotation-driven) ─
+# Auto-configured by resilience4j-spring-boot3.
+# Each provider's send() uses @CircuitBreaker / @Retry annotations
+# referencing named instances defined here.
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60s
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+    instances:
+      SENDGRID:
+        baseConfig: default
+      AWS_SES:
+        baseConfig: default
+      TWILIO:
+        baseConfig: default
+      AWS_SNS:
+        baseConfig: default
+      FCM:
+        baseConfig: default
+      APNS:
+        baseConfig: default
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 2s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2.0
+        retryExceptions:
+          - java.lang.RuntimeException
+    instances:
+      SENDGRID:
+        baseConfig: default
+      AWS_SES:
+        baseConfig: default
+      TWILIO:
+        baseConfig: default
+      AWS_SNS:
+        baseConfig: default
+      FCM:
+        baseConfig: default
+      APNS:
+        baseConfig: default
+
+# ── Logging ───────────────────────────────────────────────────
+logging:
+  level:
+    root: INFO
+    com.notificationservice: DEBUG
+    org.apache.kafka: WARN
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
